@@ -1,25 +1,12 @@
 import { Header } from "./components/NavBar";
-import "./App.css";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { GameListPage } from "./pages/GameListPage";
-
-const GameRoutes = (): React.ReactElement => {
-  return (
-    <Routes>
-      <Route key="gamelistpage" path="/" element={<GameListPage />} />
-    </Routes>
-  );
-}
+import { GameRoutes } from "./GameRoutes";
 
 function App(): JSX.Element {
+  document.documentElement.classList.add('dark')
   return (
     <>
-    <Header />
-      <div className="container max-w-sm m-auto flex flex-col h-screen justify-center">
-    <BrowserRouter>
-      <GameRoutes/>
-    </BrowserRouter>
-    </div>
+      <Header />
+      <GameRoutes />
     </>
   );
 }
