@@ -16,7 +16,7 @@ export const NewGamePage: React.FC = () => {
   
   const createNewGame = (): void => {
     if (playerNameRef.current != null && playerNameRef.current.value !== "") {
-      dispatch(startNewGame({ id: generateId(), player: { name: playerNameRef.current.value } }));
+      dispatch(startNewGame({ id: generateId(), player: { name: playerNameRef.current.value, credits: 0 } }));
       window.location.href = locationRoute;
     }
   };
