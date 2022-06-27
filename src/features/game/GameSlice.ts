@@ -18,18 +18,23 @@ export const GameSlice = createSlice({
   reducers: {
     startNewGame: (state, action: PayloadAction<Game>) => {
       if (state.Games.some((x) => x.id === action.payload.id)) {
-        return state;
+        return;
       }
       state.Games = [...state.Games, action.payload];
       state.CurrentGame = action.payload;
     },
     startExistingGame: (state, action: PayloadAction<string>) => {
-        const selectedGame = state.Games.find(x => x.id === action.payload);
-        if(selectedGame == null)
-        {
-            return state;
-        }
-        state.CurrentGame = selectedGame;
+      const selectedGame = state.Games.find((x) => x.id === action.payload);
+      if (selectedGame == null) {
+        return;
+      }
+      state.CurrentGame = selectedGame;
+    },
+    moveToPlace: (state, action: PayloadAction<string>) => {
+      if (state.CurrentGame == null) {
+        return;
+      }
+      state.CurrentGame.currentPlace = action.payload;
     },
   },
 });
@@ -37,3 +42,5 @@ export const GameSlice = createSlice({
 export const { startNewGame, startExistingGame } = GameSlice.actions;
 
 export const selectGames = (state: RootState) => state.game.Games;
+
+export const selectCurrentGame = (state: RootState) => state.game.CurrentGame;

@@ -6,4 +6,5 @@ export type Player = {
 export type Game = {
   id: string;
   player: Player;
+  currentPlace: string;
 };

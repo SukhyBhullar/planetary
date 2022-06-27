@@ -8,10 +8,10 @@ export function Header(): JSX.Element {
         <Navbar.Brand href="/">
           <img
             src={logo}
-            className="mr-3 h-6 sm:h-9 fill-white"
+            className="mr-3 h-6 sm:h-9 dark:fill-white"
             alt="Planetary Logo"
           />
-          <span className="self-center whitespace-nowrap text-xl font-semibold text-white">
+          <span className="self-center whitespace-nowrap text-xl font-semibold text-gray-900 dark:text-white">
             Planetary
           </span>
         </Navbar.Brand>

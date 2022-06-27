@@ -1,20 +1,20 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
-import { GameSlice } from '../features/game/GameSlice';
+import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import counterReducer from "../features/counter/counterSlice";
+import { GameSlice } from "../features/game/GameSlice";
 
 const saveState = (state: any) => {
   const serializedState = JSON.stringify(state);
-  window.localStorage.setItem('app_state', serializedState);
+  window.localStorage.setItem("app_state", serializedState);
 };
 
 const loadState = () => {
-try {
-  const serializedState = window.localStorage.getItem('app_state');
-  if (!serializedState) return undefined;
-  return JSON.parse(serializedState);
-} catch (err) {
-  return undefined;
-}
+  try {
+    const serializedState = window.localStorage.getItem("app_state");
+    if (!serializedState) return undefined;
+    return JSON.parse(serializedState);
+  } catch (err) {
+    return undefined;
+  }
 };
 
 const oldState = loadState();
@@ -24,7 +24,7 @@ export const store = configureStore({
     counter: counterReducer,
     game: GameSlice.reducer,
   },
-  preloadedState: oldState
+  preloadedState: oldState,
 });
 
 export type AppDispatch = typeof store.dispatch;
@@ -39,4 +39,3 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 store.subscribe(() => {
   saveState(store.getState());
 });
-

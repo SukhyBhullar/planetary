@@ -5,18 +5,25 @@ import { startNewGame } from "../features/game/GameSlice";
 import { locationRoute } from "../GameRoutes";
 
 export const NewGamePage: React.FC = () => {
-
   const dispatch = useAppDispatch();
   const playerNameRef = useRef<HTMLInputElement>(null);
 
-  const generateId = (): string =>
-  {
-    return `game_${Date.now().toString()}}`
-  }
-  
+  const generateId = (): string => {
+    return `game_${Date.now().toString()}}`;
+  };
+
   const createNewGame = (): void => {
     if (playerNameRef.current != null && playerNameRef.current.value !== "") {
-      dispatch(startNewGame({ id: generateId(), player: { name: playerNameRef.current.value, credits: 0 } }));
+      dispatch(
+        startNewGame({
+          id: generateId(),
+          player: {
+            name: playerNameRef.current.value,
+            credits: 0,
+          },
+          currentPlace: "place_1429014821",
+        })
+      );
       window.location.href = locationRoute;
     }
   };
