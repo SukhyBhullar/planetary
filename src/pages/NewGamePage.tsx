@@ -1,7 +1,9 @@
 import { Button, Card, Label, TextInput } from "flowbite-react";
 import React, { useRef } from "react";
+import shortUUID from "short-uuid";
 import { useAppDispatch } from "../app/hooks";
 import { startNewGame } from "../features/game/GameSlice";
+import { initiateShip } from "../features/ship/ShipSlice";
 import { locationRoute } from "../GameRoutes";
 
 export const NewGamePage: React.FC = () => {
@@ -14,14 +16,22 @@ export const NewGamePage: React.FC = () => {
 
   const createNewGame = (): void => {
     if (playerNameRef.current != null && playerNameRef.current.value !== "") {
+      const shipInstanceId = "shipInstance_" + shortUUID().generate();
       dispatch(
         startNewGame({
           id: generateId(),
           player: {
             name: playerNameRef.current.value,
-            credits: 0,
+            credits: 1000,
+            shipId: shipInstanceId,
           },
           currentPlace: "place_1429014821",
+        })
+      );
+      dispatch(
+        initiateShip({
+          id: shipInstanceId,
+          shipId: "ship_131414144141",
         })
       );
       window.location.href = locationRoute;

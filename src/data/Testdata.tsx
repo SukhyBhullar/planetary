@@ -1,16 +1,6 @@
-import { Cargo, Place } from "../domain/Place";
-
-const FuelCargo: Cargo = {
-  name: "Fuel",
-  volume: 1,
-  basePrice: 10,
-};
-
-const LiquorCargo: Cargo = {
-  name: "Liquor",
-  volume: 1,
-  basePrice: 100,
-};
+import { Ship } from "../domain/Game";
+import { Place } from "../domain/Place";
+import { CommonMetalsCargo, FuelCargo, LiquorCargo } from "./Cargo";
 
 export const Places: Place[] = [
   {
@@ -24,7 +14,8 @@ export const Places: Place[] = [
         longDescription:
           "An officer stands by the requisition desk looking bored. The trade terminal provides a list of items the station has to offer",
         availableTrades: [
-          { id: "trade_414251", selling: FuelCargo, availability: 100 },
+          { id: "trade_414251", selling: FuelCargo, availability: 100, volatility: 10 },
+          { id: "trade_414252", selling: CommonMetalsCargo, availability: 100, volatility: 10 },
         ],
       },
       {
@@ -33,9 +24,17 @@ export const Places: Place[] = [
         longDescription:
           "Although the guards seem to be in earshot three soldiers brazen ask passers by about their wares",
         availableTrades: [
-          { id: "trade_135322", selling: LiquorCargo, availability: 20 },
+          { id: "trade_135322", selling: LiquorCargo, availability: 20, volatility: 40 },
         ],
       },
     ],
   },
 ];
+
+export const Ships: Ship[] = [
+  {
+    id: "ship_131414144141",
+    name: "Greco Freighter",
+    cargoHold: 1000
+  }
+]

@@ -22,6 +22,7 @@ export type Trade = {
   id: string;
   selling: Cargo;
   availability: number;
+  volatility: number;
 };
 
 export enum ActivityType {

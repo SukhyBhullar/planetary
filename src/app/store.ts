@@ -1,6 +1,8 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import counterReducer from "../features/counter/counterSlice";
 import { GameSlice } from "../features/game/GameSlice";
+import { ShipSlice } from "../features/ship/ShipSlice";
+import { TimeSlice } from "../features/time/TimeSlice";
 
 const saveState = (state: any) => {
   const serializedState = JSON.stringify(state);
@@ -23,6 +25,8 @@ export const store = configureStore({
   reducer: {
     counter: counterReducer,
     game: GameSlice.reducer,
+    time: TimeSlice.reducer,
+    ship: ShipSlice.reducer,
   },
   preloadedState: oldState,
 });
