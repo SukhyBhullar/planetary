@@ -36,10 +36,17 @@ export const GameSlice = createSlice({
       }
       state.CurrentGame.currentPlace = action.payload;
     },
+    deductCredits: (state, action: PayloadAction<number>) => {
+      if (state.CurrentGame == null) {
+        return;
+      }
+      state.CurrentGame.player.credits -= action.payload;
+    },
   },
 });
 
-export const { startNewGame, startExistingGame } = GameSlice.actions;
+export const { startNewGame, startExistingGame, deductCredits } =
+  GameSlice.actions;
 
 export const selectGames = (state: RootState) => state.game.Games;
 

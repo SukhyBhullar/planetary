@@ -1,14 +1,15 @@
 import { Button, Card, Label, Modal, TextInput } from "flowbite-react";
 import { ModalBody } from "flowbite-react/lib/esm/components/Modal/ModalBody";
 import { ModalHeader } from "flowbite-react/lib/esm/components/Modal/ModalHeader";
-import { ChangeEvent, ChangeEventHandler, useState } from "react";
+import { ChangeEvent, ChangeEventHandler, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useAppSelector } from "../app/hooks";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { PlaceLayout } from "../components/PlaceLayout";
+import { FuelCargo } from "../data/Cargo";
 import { Places } from "../data/Testdata";
-import { Trade } from "../domain/Place";
-import { selectCurrentGame } from "../features/game/GameSlice";
-import { getPlayerShip } from "../features/ship/ShipSlice";
+import { Cargo, Trade } from "../domain/Place";
+import { deductCredits, selectCurrentGame } from "../features/game/GameSlice";
+import { addCargo, getPlayerShip } from "../features/ship/ShipSlice";
 import { getCycleDate } from "../features/time/TimeSlice";
 import { PriceCalculator, PriceCost } from "../services/PriceCalculator";
 import { ShipServiceFactory } from "../services/ship/ShipServiceFactory";
@@ -21,14 +22,18 @@ export const TradePage: React.FC = () => {
   const [modalPrice, setPrice] = useState<PriceCost | undefined>();
   const [modalAmount, setModalAmount] = useState<number | undefined>();
 
+  const modalBuyAmount = useRef<HTMLInputElement>(null);
   const currentGame = useAppSelector(selectCurrentGame);
   const day = useAppSelector(getCycleDate);
   const shipState = useAppSelector(getPlayerShip);
+
+  const dispatch = useAppDispatch();
 
   function OpenBuyModal(trade: Trade, price: PriceCost): void {
     setTrade(trade);
     setOpenModal("BuyModal");
     setPrice(price);
+    zeroBuyModal();
   }
 
   const setAmount: ChangeEventHandler<HTMLInputElement> = (
@@ -51,6 +56,12 @@ export const TradePage: React.FC = () => {
     event.currentTarget.value = amount.toString();
 
     setModalAmount(amount);
+  };
+
+  const buyCargo = (cargo: Cargo, price: number, amount: number) => {
+    dispatch(deductCredits(price * amount));
+    dispatch(addCargo({ amount: amount, cargo: cargo }));
+    zeroBuyModal();
   };
 
   if (shipState == null) {
@@ -105,8 +116,8 @@ export const TradePage: React.FC = () => {
           <div className="flex flex-col items-center">
             <p className="font-normal text-gray-200 text-xl">
               Cargo space{" "}
-              {(shipState.cargoAmount + deNull(modalAmount, 0)) *
-                deNull(modalTrade?.selling.volume, 0)}
+              {shipState.cargoAmount +
+                deNull(modalAmount, 0) * deNull(modalTrade?.selling.volume, 0)}
               /{shipBase.cargoHold}
             </p>
             <p className="font-normal text-gray-200 text-xl">
@@ -123,13 +134,23 @@ export const TradePage: React.FC = () => {
                 defaultValue={0}
                 onChange={setAmount}
                 min={0}
+                ref={modalBuyAmount}
               />
             </div>
           </div>
         </ModalBody>
         <Modal.Footer>
           <div className="flex justify-center min-w-full gap-10">
-            <Button color="success" onClick={() => setOpenModal(undefined)}>
+            <Button
+              color="success"
+              onClick={() =>
+                buyCargo(
+                  deNull(modalTrade?.selling, FuelCargo),
+                  deNull(modalPrice?.buyPrice, 0),
+                  deNull(modalAmount, 0)
+                )
+              }
+            >
               <div className="text-xl w-20">Buy</div>
             </Button>
             <Button color="failure" onClick={() => setOpenModal(undefined)}>
@@ -140,4 +161,10 @@ export const TradePage: React.FC = () => {
       </Modal>
     </PlaceLayout>
   );
+
+  function zeroBuyModal() {
+    if (modalBuyAmount.current)
+      modalBuyAmount.current.value = "0";
+    setModalAmount(0);
+  }
 };

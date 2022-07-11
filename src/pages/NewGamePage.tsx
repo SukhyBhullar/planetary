@@ -22,7 +22,7 @@ export const NewGamePage: React.FC = () => {
           id: generateId(),
           player: {
             name: playerNameRef.current.value,
-            credits: 1000,
+            credits: 50000,
             shipId: shipInstanceId,
           },
           currentPlace: "place_1429014821",
