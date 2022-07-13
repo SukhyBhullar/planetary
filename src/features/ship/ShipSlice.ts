@@ -3,7 +3,8 @@ import { RootState } from "../../app/store";
 import { Cargo } from "../../domain/Place";
 
 interface ShipState {
-  currentShip: ShipGameState | null;
+  currentShip: string | null;
+  currentShipIndex: number | null,
   ships: ShipGameState[];
 }
 
@@ -21,6 +22,7 @@ interface ShipGameState {
 
 const initialState: ShipState = {
   currentShip: null,
+  currentShipIndex: null,
   ships: [],
 };
 
@@ -32,6 +34,13 @@ export interface initiateShipParams {
 export interface addCargoParams {
   cargo: Cargo;
   amount: number;
+}
+
+const getShipGame = (state: ShipState) => {
+  if (state.currentShipIndex == null) {
+    throw new Error("Current game not selected")
+  }
+  return state.ships[state.currentShipIndex]
 }
 
 export const ShipSlice = createSlice({
@@ -46,22 +55,24 @@ export const ShipSlice = createSlice({
         cargoInBay: [],
       };
       state.ships.push(newShip);
-      state.currentShip = newShip;
+      state.currentShip = action.payload.id;
+      state.currentShipIndex = state.ships.length - 1
     },
     setCurrentShip: (state, action: PayloadAction<string>) => {
-      const selectedShip = state.ships.find((s) => s.id === action.payload);
-      if (selectedShip === undefined) {
+      const selectedShip = state.ships.findIndex((s) => s.id === action.payload);
+      if (selectedShip === -1) {
         return;
       }
-      state.currentShip = selectedShip;
+      state.currentShip = action.payload;
+      state.currentShipIndex = selectedShip;
     },
     addCargo: (state, action: PayloadAction<addCargoParams>) => {
       if (state.currentShip == null) return;
-      const existingCargo = state.currentShip.cargoInBay.find(
+      const existingCargo = getShipGame(state).cargoInBay.find(
         (c) => c.cargo.name === action.payload.cargo.name
       );
       if (existingCargo === undefined) {
-        state.currentShip.cargoInBay.push({
+        getShipGame(state).cargoInBay.push({
           amount: action.payload.amount,
           cargo: action.payload.cargo,
         });
@@ -69,7 +80,7 @@ export const ShipSlice = createSlice({
         existingCargo.amount += action.payload.amount;
       }
 
-      state.currentShip.cargoAmount +=
+      getShipGame(state).cargoAmount = getShipGame(state).cargoAmount +
         action.payload.amount * action.payload.cargo.volume;
     },
   },
@@ -77,4 +88,4 @@ export const ShipSlice = createSlice({
 
 export const { initiateShip, setCurrentShip, addCargo } = ShipSlice.actions;
 
-export const getPlayerShip = (state: RootState) => state.ship.currentShip;
+export const getPlayerShip = (state: RootState) => getShipGame(state.ship);

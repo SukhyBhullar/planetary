@@ -32,6 +32,7 @@ test("No ships in state adds ship", () => {
   const result = reducer(
     {
       currentShip: null,
+      currentShipIndex: 0,
       ships: [],
     },
     initiateShip(shipToSet)
@@ -39,7 +40,8 @@ test("No ships in state adds ship", () => {
   expect(result.ships).toHaveLength(1);
   expect(result.ships[0].id).toBe(id);
   expect(result.ships[0].shipId).toBe(shipId);
-  expect(result.currentShip?.id).toBe(id);
+  expect(result.currentShip).toBe(id);
+  expect(result.currentShipIndex).toBe(0);
 });
 
 test("Load current ship into state", () => {
@@ -49,11 +51,12 @@ test("Load current ship into state", () => {
     {
       currentShip: null,
       ships: [{ id: id, shipId: shipId, cargoAmount: 0, cargoInBay: [] }],
+      currentShipIndex: null,
     },
     setCurrentShip(id)
   );
 
-  expect(result.currentShip?.id).toBe(id);
+  expect(result.currentShip).toBe(id);
 });
 
 test("Add cargo to empty bay", () => {
@@ -61,22 +64,23 @@ test("Add cargo to empty bay", () => {
   const shipId = "ship_12315521";
   const result = reducer(
     {
-      currentShip: {
+      currentShip: id,
+      currentShipIndex: 0,
+      ships: [{
         id: id,
         shipId: shipId,
         cargoAmount: 0,
         cargoInBay: [],
-      },
-      ships: [],
+      }],
     },
     addCargo({ amount: 10, cargo: TestCargo })
   );
 
-  expect(result.currentShip?.cargoInBay).toContainEqual({
+  expect(result.ships[0].cargoInBay).toContainEqual({
     cargo: TestCargo,
     amount: 10,
   });
-  expect(result.currentShip?.cargoAmount).toBe(100);
+  expect(result.ships[0].cargoAmount).toBe(100);
 });
 
 test("Add cargo to bay with other cargo", () => {
@@ -84,26 +88,27 @@ test("Add cargo to bay with other cargo", () => {
   const shipId = "ship_12315521";
   const result = reducer(
     {
-      currentShip: {
+      currentShip: id,
+      currentShipIndex: 0,
+      ships: [{
         id: id,
         shipId: shipId,
         cargoAmount: 200,
         cargoInBay: [{ amount: 20, cargo: OtherCargo }],
-      },
-      ships: [],
+      }],
     },
     addCargo({ amount: 10, cargo: TestCargo })
   );
 
-  expect(result.currentShip?.cargoInBay).toContainEqual({
+  expect(result.ships[0].cargoInBay).toContainEqual({
     cargo: TestCargo,
     amount: 10,
   });
-  expect(result.currentShip?.cargoInBay).toContainEqual({
+  expect(result.ships[0].cargoInBay).toContainEqual({
     cargo: OtherCargo,
     amount: 20,
   });
-  expect(result.currentShip?.cargoAmount).toBe(300);
+  expect(result.ships[0].cargoAmount).toBe(300);
 });
 
 test("Add cargo to bay with existing cargo", () => {
@@ -111,7 +116,9 @@ test("Add cargo to bay with existing cargo", () => {
   const shipId = "ship_12315521";
   const result = reducer(
     {
-      currentShip: {
+      currentShip: id,
+      currentShipIndex: 0,
+      ships: [{
         id: id,
         shipId: shipId,
         cargoAmount: 300,
@@ -119,19 +126,18 @@ test("Add cargo to bay with existing cargo", () => {
           { amount: 20, cargo: OtherCargo },
           { cargo: TestCargo, amount: 10 },
         ],
-      },
-      ships: [],
+      }],
     },
     addCargo({ amount: 15, cargo: TestCargo })
   );
 
-  expect(result.currentShip?.cargoInBay).toContainEqual({
+  expect(result.ships[0].cargoInBay).toContainEqual({
     cargo: TestCargo,
     amount: 25,
   });
-  expect(result.currentShip?.cargoInBay).toContainEqual({
+  expect(result.ships[0].cargoInBay).toContainEqual({
     cargo: OtherCargo,
     amount: 20,
   });
-  expect(result.currentShip?.cargoAmount).toBe(450);
+  expect(result.ships[0].cargoAmount).toBe(450);
 });

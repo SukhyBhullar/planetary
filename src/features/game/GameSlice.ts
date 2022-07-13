@@ -4,13 +4,30 @@ import { Game } from "../../domain/Game";
 
 interface GameSliceState {
   Games: Game[];
-  CurrentGame: Game | null;
+  CurrentGame: string | null;
+  CurrentGameIndex: number | null;
 }
 
 const initialState: GameSliceState = {
   Games: [],
   CurrentGame: null,
+  CurrentGameIndex: null,
 };
+
+const getGameIndex = (id: string, arr: Game[]) => {
+  const selectedGame = arr.findIndex((x) => x.id === id);
+  if (selectedGame == null) {
+    throw new Error("Game not found")
+  }
+  return selectedGame
+};
+
+const getCurrentGame = (state: GameSliceState) => {
+  if (state.CurrentGameIndex == null) {
+    throw new Error("Current game not selected")
+  }
+  return state.Games[state.CurrentGameIndex]
+}
 
 export const GameSlice = createSlice({
   name: "game",
@@ -21,26 +38,24 @@ export const GameSlice = createSlice({
         return;
       }
       state.Games = [...state.Games, action.payload];
-      state.CurrentGame = action.payload;
+      state.CurrentGame = action.payload.id;
+      state.CurrentGameIndex = getGameIndex(action.payload.id, state.Games);
     },
     startExistingGame: (state, action: PayloadAction<string>) => {
-      const selectedGame = state.Games.find((x) => x.id === action.payload);
-      if (selectedGame == null) {
-        return;
-      }
-      state.CurrentGame = selectedGame;
+      state.CurrentGameIndex = getGameIndex(action.payload, state.Games);
+      state.CurrentGame = action.payload
     },
     moveToPlace: (state, action: PayloadAction<string>) => {
       if (state.CurrentGame == null) {
         return;
       }
-      state.CurrentGame.currentPlace = action.payload;
+      getCurrentGame(state).currentPlace = action.payload;
     },
     deductCredits: (state, action: PayloadAction<number>) => {
       if (state.CurrentGame == null) {
         return;
       }
-      state.CurrentGame.player.credits -= action.payload;
+      getCurrentGame(state).player.credits -= action.payload;
     },
   },
 });
@@ -50,4 +65,10 @@ export const { startNewGame, startExistingGame, deductCredits } =
 
 export const selectGames = (state: RootState) => state.game.Games;
 
-export const selectCurrentGame = (state: RootState) => state.game.CurrentGame;
+export const selectCurrentGame = (state: RootState) => 
+{
+  if (state.game.CurrentGameIndex == null) {
+    return null
+  }
+  return state.game.Games[state.game.CurrentGameIndex]
+}
