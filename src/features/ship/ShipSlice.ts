@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { Cargo } from "../../domain/Place";
+import { Cargo } from "../../domain/Cargo";
 
 interface ShipState {
   currentShip: string | null;
-  currentShipIndex: number | null,
+  currentShipIndex: number | null;
   ships: ShipGameState[];
 }
 
@@ -38,10 +38,10 @@ export interface addCargoParams {
 
 const getShipGame = (state: ShipState) => {
   if (state.currentShipIndex == null) {
-    throw new Error("Current game not selected")
+    throw new Error("Current game not selected");
   }
-  return state.ships[state.currentShipIndex]
-}
+  return state.ships[state.currentShipIndex];
+};
 
 export const ShipSlice = createSlice({
   name: "ship",
@@ -56,10 +56,12 @@ export const ShipSlice = createSlice({
       };
       state.ships.push(newShip);
       state.currentShip = action.payload.id;
-      state.currentShipIndex = state.ships.length - 1
+      state.currentShipIndex = state.ships.length - 1;
     },
     setCurrentShip: (state, action: PayloadAction<string>) => {
-      const selectedShip = state.ships.findIndex((s) => s.id === action.payload);
+      const selectedShip = state.ships.findIndex(
+        (s) => s.id === action.payload
+      );
       if (selectedShip === -1) {
         return;
       }
@@ -80,7 +82,8 @@ export const ShipSlice = createSlice({
         existingCargo.amount += action.payload.amount;
       }
 
-      getShipGame(state).cargoAmount = getShipGame(state).cargoAmount +
+      getShipGame(state).cargoAmount =
+        getShipGame(state).cargoAmount +
         action.payload.amount * action.payload.cargo.volume;
     },
   },

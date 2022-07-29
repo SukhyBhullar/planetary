@@ -1,4 +1,4 @@
-import { Cargo } from "../domain/Place";
+import { Cargo } from "../domain/Cargo";
 
 export const FuelCargo: Cargo = {
   name: "Fuel",

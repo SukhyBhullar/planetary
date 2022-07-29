@@ -1,4 +1,4 @@
-import { Cargo } from "../../../domain/Place";
+import { Cargo } from "../../../domain/Cargo";
 import {
   addCargo,
   initiateShip,
@@ -66,12 +66,14 @@ test("Add cargo to empty bay", () => {
     {
       currentShip: id,
       currentShipIndex: 0,
-      ships: [{
-        id: id,
-        shipId: shipId,
-        cargoAmount: 0,
-        cargoInBay: [],
-      }],
+      ships: [
+        {
+          id: id,
+          shipId: shipId,
+          cargoAmount: 0,
+          cargoInBay: [],
+        },
+      ],
     },
     addCargo({ amount: 10, cargo: TestCargo })
   );
@@ -90,12 +92,14 @@ test("Add cargo to bay with other cargo", () => {
     {
       currentShip: id,
       currentShipIndex: 0,
-      ships: [{
-        id: id,
-        shipId: shipId,
-        cargoAmount: 200,
-        cargoInBay: [{ amount: 20, cargo: OtherCargo }],
-      }],
+      ships: [
+        {
+          id: id,
+          shipId: shipId,
+          cargoAmount: 200,
+          cargoInBay: [{ amount: 20, cargo: OtherCargo }],
+        },
+      ],
     },
     addCargo({ amount: 10, cargo: TestCargo })
   );
@@ -118,15 +122,17 @@ test("Add cargo to bay with existing cargo", () => {
     {
       currentShip: id,
       currentShipIndex: 0,
-      ships: [{
-        id: id,
-        shipId: shipId,
-        cargoAmount: 300,
-        cargoInBay: [
-          { amount: 20, cargo: OtherCargo },
-          { cargo: TestCargo, amount: 10 },
-        ],
-      }],
+      ships: [
+        {
+          id: id,
+          shipId: shipId,
+          cargoAmount: 300,
+          cargoInBay: [
+            { amount: 20, cargo: OtherCargo },
+            { cargo: TestCargo, amount: 10 },
+          ],
+        },
+      ],
     },
     addCargo({ amount: 15, cargo: TestCargo })
   );

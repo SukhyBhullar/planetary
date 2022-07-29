@@ -1,3 +1,5 @@
+import { Cargo } from "./Cargo";
+
 export type Place = {
   id: string;
   name: string;
@@ -10,12 +12,6 @@ export type TradeActivity = {
   description: string;
   longDescription: string;
   availableTrades: Trade[];
-};
-
-export type Cargo = {
-  volume: number;
-  name: string;
-  basePrice: number;
 };
 
 export type Trade = {

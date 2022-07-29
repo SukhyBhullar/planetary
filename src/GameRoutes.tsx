@@ -3,7 +3,7 @@ import { GameListPage } from "./pages/GameListPage";
 import { PlacePage } from "./pages/PlacePage";
 import { NewGamePage } from "./pages/NewGamePage";
 import { ResetPage } from "./pages/Reset";
-import { TradePage } from "./pages/TradePage";
+import { TradePage } from "./pages/Trade/TradePage";
 import { DebugPage } from "./pages/DebugPage";
 
 export const idParam = ":id";
