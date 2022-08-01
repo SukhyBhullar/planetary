@@ -36,12 +36,26 @@ export interface addCargoParams {
   amount: number;
 }
 
-const getShipGame = (state: ShipState) => {
+export interface removeCargoParams {
+  cargo: Cargo;
+  amount: number;
+}
+
+const getCurrentShip = (state: ShipState) => {
   if (state.currentShipIndex == null) {
     throw new Error("Current game not selected");
   }
   return state.ships[state.currentShipIndex];
 };
+
+function getExistingCargo(
+  state: any,
+  action: { payload: addCargoParams; type: string }
+) {
+  return getCurrentShip(state).cargoInBay.find(
+    (c) => c.cargo.name === action.payload.cargo.name
+  );
+}
 
 export const ShipSlice = createSlice({
   name: "ship",
@@ -70,11 +84,9 @@ export const ShipSlice = createSlice({
     },
     addCargo: (state, action: PayloadAction<addCargoParams>) => {
       if (state.currentShip == null) return;
-      const existingCargo = getShipGame(state).cargoInBay.find(
-        (c) => c.cargo.name === action.payload.cargo.name
-      );
+      const existingCargo = getExistingCargo(state, action);
       if (existingCargo === undefined) {
-        getShipGame(state).cargoInBay.push({
+        getCurrentShip(state).cargoInBay.push({
           amount: action.payload.amount,
           cargo: action.payload.cargo,
         });
@@ -82,13 +94,31 @@ export const ShipSlice = createSlice({
         existingCargo.amount += action.payload.amount;
       }
 
-      getShipGame(state).cargoAmount =
-        getShipGame(state).cargoAmount +
+      getCurrentShip(state).cargoAmount =
+        getCurrentShip(state).cargoAmount +
+        action.payload.amount * action.payload.cargo.volume;
+    },
+    removeCargo: (state, action: PayloadAction<removeCargoParams>) => {
+      const existingCargo = getExistingCargo(state, action);
+      if (existingCargo === undefined) {
+        throw new Error("tried to remove cargo that does not exist");
+      }
+      if (existingCargo.amount < action.payload.amount) {
+        throw new Error(
+          "tried to remove cargo but amount is greater than in bay"
+        );
+      }
+      existingCargo.amount -= action.payload.amount;
+      getCurrentShip(state).cargoInBay = getCurrentShip(
+        state
+      ).cargoInBay.filter((c) => c.amount !== 0);
+      getCurrentShip(state).cargoAmount -=
         action.payload.amount * action.payload.cargo.volume;
     },
   },
 });
 
-export const { initiateShip, setCurrentShip, addCargo } = ShipSlice.actions;
+export const { initiateShip, setCurrentShip, addCargo, removeCargo } =
+  ShipSlice.actions;
 
-export const getPlayerShip = (state: RootState) => getShipGame(state.ship);
+export const getPlayerShip = (state: RootState) => getCurrentShip(state.ship);

@@ -3,6 +3,7 @@ import {
   addCargo,
   initiateShip,
   initiateShipParams,
+  removeCargo,
   setCurrentShip,
   ShipSlice,
 } from "../ShipSlice";
@@ -146,4 +147,95 @@ test("Add cargo to bay with existing cargo", () => {
     amount: 20,
   });
   expect(result.ships[0].cargoAmount).toBe(450);
+});
+
+test("Remove cargo that doesn't exist throws error", () => {
+  expect(() => {
+    const id = "shipInstance_12315521";
+    const shipId = "ship_12315521";
+    reducer(
+      {
+        currentShip: id,
+        currentShipIndex: 0,
+        ships: [
+          {
+            id: id,
+            shipId: shipId,
+            cargoAmount: 200,
+            cargoInBay: [],
+          },
+        ],
+      },
+      removeCargo({ amount: 10, cargo: TestCargo })
+    );
+  }).toThrow("tried to remove cargo that does not exist");
+});
+
+test("Remove cargo that exists but tries to remove too many should throw error", () => {
+  expect(() => {
+    const id = "shipInstance_12315521";
+    const shipId = "ship_12315521";
+    reducer(
+      {
+        currentShip: id,
+        currentShipIndex: 0,
+        ships: [
+          {
+            id: id,
+            shipId: shipId,
+            cargoAmount: 200,
+            cargoInBay: [{ amount: 20, cargo: TestCargo }],
+          },
+        ],
+      },
+      removeCargo({ amount: 21, cargo: TestCargo })
+    );
+  }).toThrow("tried to remove cargo but amount is greater than in bay");
+});
+
+test("Remove cargo that exists reduces the amount", () => {
+  const id = "shipInstance_12315521";
+  const shipId = "ship_12315521";
+  const result = reducer(
+    {
+      currentShip: id,
+      currentShipIndex: 0,
+      ships: [
+        {
+          id: id,
+          shipId: shipId,
+          cargoAmount: 200,
+          cargoInBay: [{ amount: 20, cargo: TestCargo }],
+        },
+      ],
+    },
+    removeCargo({ amount: 10, cargo: TestCargo })
+  );
+  expect(result.ships[0].cargoInBay).toContainEqual({
+    cargo: TestCargo,
+    amount: 10,
+  });
+  expect(result.ships[0].cargoAmount).toBe(100);
+});
+
+test("Remove all cargo that exists removes the cargo", () => {
+  const id = "shipInstance_12315521";
+  const shipId = "ship_12315521";
+  const result = reducer(
+    {
+      currentShip: id,
+      currentShipIndex: 0,
+      ships: [
+        {
+          id: id,
+          shipId: shipId,
+          cargoAmount: 200,
+          cargoInBay: [{ amount: 20, cargo: TestCargo }],
+        },
+      ],
+    },
+    removeCargo({ amount: 20, cargo: TestCargo })
+  );
+  expect(result.ships[0].cargoInBay).toHaveLength(0);
+  expect(result.ships[0].cargoAmount).toBe(0);
 });
