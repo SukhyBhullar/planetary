@@ -7,6 +7,7 @@ import { Places } from "../../data/Testdata";
 import { Trade } from "../../domain/Place";
 import { selectCurrentGame } from "../../features/game/GameSlice";
 import { getCycleDate } from "../../features/time/TimeSlice";
+import { locationRoute } from "../../GameRoutes";
 import { PriceCalculator, PriceCost } from "../../services/PriceCalculator";
 import { BuyModal } from "./BuyModal";
 import { SellModal } from "./SellModal";
@@ -67,6 +68,7 @@ export const TradePage: React.FC = () => {
           </Card>
         );
       })}
+      <Button color={"failure"} href={locationRoute}>Return</Button>
       <BuyModal
         trade={buyTrade}
         price={buyPrice}
