@@ -1,5 +1,5 @@
-import { Trade } from "../domain/Place";
-import { PriceCalculator } from "../services/PriceCalculator";
+import { Trade } from "../../domain/Place";
+import { PriceCalculator } from "../../services/PriceCalculator";
 
 const makeTrade = (availability: number, volatility: number): Trade => {
   const cargo = { name: "test", volume: 10, basePrice: 100 };

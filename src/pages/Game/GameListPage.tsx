@@ -1,9 +1,9 @@
 import { Button, Card } from "flowbite-react";
 import React from "react";
-import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { selectCurrentGame, selectGames, startExistingGame } from "../features/game/GameSlice";
-import { setCurrentShip } from "../features/ship/ShipSlice";
-import { locationRoute, newGameRoute } from "../GameRoutes";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { selectCurrentGame, selectGames, startExistingGame } from "../../features/game/GameSlice";
+import { setCurrentShip } from "../../features/ship/ShipSlice";
+import { locationRoute, newGameRoute } from "../../GameRoutes";
 
 export const GameListPage: React.FC = () => {
   const existingGames = useAppSelector(selectGames);

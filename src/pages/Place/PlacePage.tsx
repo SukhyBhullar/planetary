@@ -1,14 +1,15 @@
 import { Button, Card } from "flowbite-react";
-import { useAppSelector } from "../app/hooks";
-import { PlaceLayout } from "../components/PlaceLayout";
-import { Places } from "../data/Testdata";
-import { selectCurrentGame } from "../features/game/GameSlice";
-import { idParam, tradeRoute } from "../GameRoutes";
+import { useAppSelector } from "../../app/hooks";
+import { PlaceLayout } from "../../components/PlaceLayout";
+import { selectCurrentGame } from "../../features/game/GameSlice";
+import { idParam, tradeRoute } from "../../GameRoutes";
+import { PlaceServiceFactory } from "../../services/place/PlaceServiceFactory";
+import { deNull } from "../../util/denull";
 
 export const PlacePage: React.FC = () => {
   const currentGame = useAppSelector(selectCurrentGame);
-
-  const currentPlace = Places.find((p) => p.id === currentGame?.currentPlace);
+  const PlaceService = PlaceServiceFactory();
+  const currentPlace =  PlaceService.GetPlace(deNull(currentGame?.currentPlace, ""));
 
   if (currentPlace === undefined) return <p>Error</p>;
 

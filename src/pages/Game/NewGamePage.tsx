@@ -1,10 +1,10 @@
 import { Button, Card, Label, TextInput } from "flowbite-react";
 import React, { useRef } from "react";
 import shortUUID from "short-uuid";
-import { useAppDispatch } from "../app/hooks";
-import { startNewGame } from "../features/game/GameSlice";
-import { initiateShip } from "../features/ship/ShipSlice";
-import { locationRoute } from "../GameRoutes";
+import { useAppDispatch } from "../../app/hooks";
+import { startNewGame } from "../../features/game/GameSlice";
+import { initiateShip } from "../../features/ship/ShipSlice";
+import { locationRoute } from "../../GameRoutes";
 
 export const NewGamePage: React.FC = () => {
   const dispatch = useAppDispatch();
